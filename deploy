@@ -1,21 +1,33 @@
 #!/usr/bin/env bash
 set -ex
+
 NETWORK=epimodels
+APP_BRANCH=mrc-3681
+API_BRANCH=main
+
 docker network create $NETWORK
-docker volume create redis-docker rm --force redis odin.api wodin-msc-idm-2022 proxy 2> /dev/null || /bin/true
+docker volume create redis-docker
+docker rm --force redis odin.api wodin-msc-idm-2022 proxy 2> /dev/null || /bin/true
+
+docker pull mrcide/odin.api:$API_BRANCH
+docker pull mrcide/wodin:$APP_BRANCH
+docker pull reside/proxy-nginx:latest
 
 # Shared:
 docker run -d --name redis --rm -v redis-data:/data --network=$NETWORK redis:6
-docker run -d --name odin.api --rm --network=$NETWORK mrcide/odin.api:main
+docker run -d --name odin.api --rm --network=$NETWORK \
+       mrcide/odin.api:$API_BRANCH
 
 # One per app
 docker run -d --name wodin-msc-idm-2022 --rm --network=$NETWORK \
        -v $PWD/config/msc-idm-2022:/wodin/config:ro \
-       mrcide/wodin:mrc-3681
+       mrcide/wodin:$APP_BRANCH
 
 # Shared, but we need the app up and running already. We'll rewrite
 # this to be more general with a different proxy container soon...
-docker run -it --network $NETWORK --name proxy reside/proxy-nginx:latest \
+docker run --rm -d --network $NETWORK --name proxy \
+       -p 80:80 -p 443:443 \
+       reside/proxy-nginx:latest \
        wodin-msc-idm-2022:3000 epimodels.dide.ic.ac.uk 80 443
 docker cp ssl/certificate.pem proxy:/run/proxy/
 docker cp ssl/key.pem proxy:/run/proxy/
