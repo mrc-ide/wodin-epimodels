@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+export VAULT_ADDR=https://vault.dide.ic.ac.uk:8200
+export VAULT_TOKEN=$(vault login -method=github -token-only)
+mkdir -p ssl
+vault read -field=key secret/wodin/ssl/epimodels > ssl/key.pem
+vault read -field=cert secret/wodin/ssl/epimodels > ssl/certificate.pem
