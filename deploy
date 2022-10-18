@@ -5,7 +5,7 @@ NETWORK=epimodels
 APP_BRANCH=mrc-3681
 API_BRANCH=main
 
-docker network create $NETWORK
+docker network create $NETWORK 2> /dev/null || /bin/true
 docker volume create redis-docker
 docker rm --force redis odin.api wodin-msc-idm-2022 proxy 2> /dev/null || /bin/true
 
