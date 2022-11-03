@@ -13,18 +13,18 @@ docker pull mrcide/odin.api:$API_BRANCH
 docker pull mrcide/wodin:$APP_BRANCH
 
 # Shared:
-docker run -d --name redis --rm -v redis-data:/data --network=$NETWORK redis:6
-docker run -d --name odin.api --rm --network=$NETWORK \
+docker run -d --name redis -v redis-data:/data --network=$NETWORK redis:6
+docker run -d --name odin.api --network=$NETWORK \
        mrcide/odin.api:$API_BRANCH
 
 # One per app
-docker run -d --name wodin-msc-idm-2022 --rm --network=$NETWORK \
+docker run -d --name wodin-msc-idm-2022 --network=$NETWORK \
        -v $PWD/config/msc-idm-2022:/wodin/config:ro \
        mrcide/wodin:$APP_BRANCH
 
 # Shared, but we need the app up and running already. We'll rewrite
 # this to be more general with a different proxy container soon...
-docker run --rm -d --network $NETWORK --name proxy \
+docker run -d --network $NETWORK --name proxy \
        -p 80:80 -p 443:443 \
        mrcide/proxy-wodin-epimodels:latest
 docker cp ssl/certificate.pem proxy:/run/proxy/
