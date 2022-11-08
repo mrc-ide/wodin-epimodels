@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Wodin</title>
+    <link rel="stylesheet" href="css/bootstrap.css"/>
+    <link rel="stylesheet" href="files/index/index.css"/>
+  </head>
+  <body>
+    <div class="main">
+      <div class="container mt-5">
+        <h1>Wodin demo and documentation</h1>
+
+        <p>
+          This site exists for two reasons; to show off different core
+          features of wodin and to act as a source of documentation by
+          example for people configuring a wodin deployment.  Let us
+          know if there's something you would like to see here.
+        </p>
+
+        <h2>General layout and configuration</h2>
+
+        <p>
+          For wodin deployments, you will generally have a collection
+          of apps (e.g., for different days in a course).  These apps
+          can all be of different types (e.g., one for fitting to
+          data, another for running stochastic simulations, see below
+          for details).
+        </p>
+
+        <h3>The file <code>wodin.config.json</code></h3>
+
+        <p>
+          This will be core configuration for your deployment goes. It
+          is in
+          "<a href="https://en.wikipedia.org/wiki/JSON">JSON</a>"
+          format, which is designed more for computers than humans,
+          but should hopefully be easy enough to work with.  Keys are
+          case sensitive (e.g., <code>courseTitle</code> is different
+          to <code>coursetitle</code>) and quotes are required on all
+          strings including keys.  We will create a validator to help
+          with creating these.
+        </p>
+
+        <ul>
+          <li>
+            <code>courseTitle</code>: The human-readable title for
+            your course. This will be displayed in the top-left of every
+            app, clicking it will return to the main landing page
+          </li>
+          <li>
+            <code>savePrefix</code>: A single word, used to organise
+            saved sessions within the database. This should reflect
+            your <code>courseTitle</code> to some degree but not
+            contain spaces. We use this to allow cleaning up of saved
+            sessions once a course is finished (depending on how long
+            you need to keep them for).
+          </li>
+          <li>
+            <code>baseUrl</code>: The url to find your site. For a
+            deployment on epimodels, this will
+            be <code>https://epimodels.dide.ic.ac.uk/&lt;path&gt;</code>,
+            where <code>&lt;path&gt</code> is specific to your deployment.
+          </li>
+          <li>
+            <code>appsPath</code>: The path where each app will be
+            found. The default is <code>apps</code>, so if you had an
+            app called "ebola" and a <code>baseURL</code>
+            of <code>https://epimodels.dide.ic.ac.uk/mycourse</code>
+            then it would be available
+            at <code>https://epimodels.dide.ic.ac.uk/mycourse/apps/ebola</code>. You
+            can use something else here
+            (e.g., <code>models</code>, <code>example</code>) if you
+            prefer.
+          </li>
+        </ul>
+        <p>There are few others that you should leave alone:</p>
+        <ul>
+          <li>
+            <code>port</code>: The port that the application will
+            serve on; because this will be behind a proxy this does
+            not really matter in a production deployment.
+          </li>
+          <li>
+            <code>odinAPI</code>: The URL to find
+            the <a href="https://mrc-ide.github.io/odin.api">odin.api</a>
+            server. Typically the default
+            value <code>http://odin.api:8001</code> will be
+            appropriate here.
+          </li>
+          <li>
+            <code>redisURL</code>: The URL to find
+            the <a href="https://redis.io">Redis</a> server. Typically
+            the default value <code>redis://redis:6379</code> will be
+            appropriate here.
+          </li>
+        </ul>
+
+        <p>At the top level, some other files and directories should exist</p>
+
+        <ul>
+          <li>
+            <code>index.html</code>: A single HTML file that
+            users can use to navigate between your apps.  Clicking on
+            the course name in the top-left of each app will return to
+            this page. You can write your HTML however you want.
+          </li>
+          <li>
+            <code>apps/</code>: A directory with different application
+            configurations (see below). If you
+            adjust <code>appsPath</code> you must rename this to
+            reflect that value.
+          </li>
+          <li>
+            <code>defaultCode/</code>: A directory with default
+            code. If a file <code>example.R</code> exists, then the
+            app at <code>apps/example</code> will load this code.
+          </li>
+          <li>
+            <code>help</code>: Markdown files used as per-application
+            help. See example for more information.
+          </li>
+          <li>
+            <code>files</code>: Additional files that you can
+            reference from your html.
+          </li>
+        </ul>
+
+        <h2>Examples</h2>
+
+        <h3>Empty basic app</h3>
+
+        <p><a href="apps/empty">Go to app</a></p>
+
+        <p>The simplest application</p>
+
+        <h3>Start with default code</h3>
+
+        <p><a href="apps/defaultcode">Go to app</a></p>
+
+        <p>
+          If you want to start an application but have a model
+          preloaded. This will be run immediately on startup, so the
+          users will see a graph with a set of trajectories on it.
+        </p>
+
+        <h3>Include explanation tab</h3>
+
+        <p><a href="apps/explanation">Go to app</a></p>
+
+        <p>
+          Include a tab of guidance as the first tab in your
+          application. This can include LaTeX-style maths, as well as
+          images.
+        </p>
+
+        <h3>Fit model to data</h3>
+
+        <p><a href="apps/fit">Go to app</a></p>
+
+        <p>
+          A simple least-squared fitting app.
+        </p>
+
+        <p>
+          You may want to distribute data, but we don't currently
+          support preloading the data into the app (let us know if
+          this is something you need). Generally, if you want to
+          distribute the data, you should put the file
+          within <code>files/</code> and reference it here.
+        </p>
+        
+        <h3>Stochastic</h3>
+
+        <p><a href="apps/stochastic">Go to app</a></p>        
+
+        <h3>Read-only code</h3>
+
+        <p><a href="apps/readonly">Go to app</a></p>
+
+        <h2>General points</h2>
+
+        <p>
+          Can't mix app types (no fit within stochastic models). Can't
+          suport *both* stochastic and deterministic models from a
+          single app.
+        </p>
+
+        <p>
+          Not all odin features are supported. Arrays, interpolation,
+          etc. Discrete time and stochastic models can't
+          use <code>output()</code>
+        </p>
+
+        <div class="float-right">
+          <img src="files/index/reside_logo.png" style="width:150px; display:block;">
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
