@@ -22,6 +22,10 @@ docker run -d --name wodin-msc-idm-2022 --network=$NETWORK \
        -v $PWD/config/msc-idm-2022:/wodin/config:ro \
        mrcide/wodin:$APP_BRANCH
 
+docker run -d --name wodin-demo --network=$NETWORK \
+       -v $PWD/config/demo:/wodin/config:ro \
+       mrcide/wodin:$APP_BRANCH
+
 # Shared, but we need the app up and running already. We'll rewrite
 # this to be more general with a different proxy container soon...
 docker run -d --network $NETWORK --name proxy \
