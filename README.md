@@ -2,8 +2,10 @@
 
 This is the repo for sketching out the initial deployment of the msc course to epimodels.dide.ic.ac.uk; once this is working we'll rewrite it to generally support a set of configurations.
 
-* we need to support multiple configurations easily; for now I've put the configuration in `config/msc-idm-2022` to reflect one way we might achieve this practically
-* there's another configuration now at `config/demo` - this time from a submodule!
+We need to support multiple configurations easily; we'll come up with a better system later but for now we're using submodules. There are currently two:
+
+* `config/demo`: a configuration we'll maintain to show off various wodin features
+* `config/msc-idm-2022`: the 2022 MSc course
 
 ## Adding a new configuration
 
