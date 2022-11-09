@@ -10,7 +10,7 @@ This is the repo for sketching out the initial deployment of the msc course to e
 Update the sources:
 
 * Add the configuration as a submodule under `config/`
-* Edit `./deploy` to bring up a container mounting this configuration
+* Edit `./deploy` to bring up a container mounting this configuration, and to remove the container on startup
 * Edit `./proxy/nginx.conf` to add the new location (two entries - one is a redirect, the other does the proxying)
 
 Then, deploy:

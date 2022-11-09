@@ -6,7 +6,7 @@ APP_BRANCH=main
 API_BRANCH=main
 PROXY_BRANCH=mrc-3781
 
-docker rm --force redis odin.api wodin-msc-idm-2022 proxy 2> /dev/null || /bin/true
+docker rm --force redis odin.api wodin-demo wodin-msc-idm-2022 proxy 2> /dev/null || /bin/true
 docker network create $NETWORK 2> /dev/null || /bin/true
 docker volume create redis-docker
 
