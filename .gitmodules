@@ -1,0 +1,3 @@
+[submodule "config/demo"]
+	path = config/demo
+	url = git@github.com:mrc-ide/wodin-demo-config
