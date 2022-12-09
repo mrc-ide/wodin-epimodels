@@ -2,7 +2,7 @@
 set -ex
 
 NETWORK=epimodels
-APP_BRANCH=main
+APP_BRANCH=ddb3d27
 API_BRANCH=main
 PROXY_BRANCH=main
 
