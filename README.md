@@ -43,4 +43,6 @@ git submodule add https://github.com/mrc-ide/wodin-demo-config config/demo2
 
 Edit [`deploy`](deploy) to list the new site within the array variable `SITES` (first line in the file basically)
 
+Update the index page, `root/index.html` to list the new site, and probably the top of this README too!
+
 Then deploy with `./deploy`
