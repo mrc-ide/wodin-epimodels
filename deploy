@@ -1,41 +1,65 @@
 #!/usr/bin/env bash
-set -ex
+set -exu
 
 NETWORK=epimodels
 APP_BRANCH=main
 API_BRANCH=main
-PROXY_BRANCH=main
+PROXY_BRANCH=mrc-3897
+REDIS="--redis-url=redis://wodin-redis:6379"
+
+WODIN_HOST=$(cat hostname)
+if [[ $WODIN_HOST == "localhost" ]]; then
+    SSL=
+    SSL_PORTS=
+    WODIN_BASE="http://$WODIN_HOST"
+else
+    SSL="--ssl"
+    SSL_PORTS="-p 443:443"
+    WODIN_BASE="https://$WODIN_HOST"
+fi
 
 docker rm --force redis odin.api wodin-demo wodin-msc-idm-2022 wodin-malawi-idm-2022 proxy 2> /dev/null || /bin/true
 docker network create $NETWORK 2> /dev/null || /bin/true
 docker volume create redis-docker
 
-docker pull mrcide/odin.api:$API_BRANCH
-docker pull mrcide/wodin:$APP_BRANCH
+# docker pull mrcide/odin.api:$API_BRANCH
+# docker pull mrcide/wodin:$APP_BRANCH
+# docker pull mrcide/wodin-proxy:$PROXY_BRANCH
 
 # Shared:
-docker run -d --name redis -v redis-data:/data --network=$NETWORK redis:6
+docker run -d --name wodin-redis -v redis-data:/data --network=$NETWORK redis:6
 docker run -d --name odin.api --network=$NETWORK \
        mrcide/odin.api:$API_BRANCH
 
-# One per app
+# One per site
+docker run -d --name wodin-demo --network=$NETWORK \
+       -v $PWD/config/demo:/wodin/config:ro \
+       mrcide/wodin:$APP_BRANCH \
+       $REDIS --base-url=$WODIN_BASE/demo /wodin/config
+
 docker run -d --name wodin-msc-idm-2022 --network=$NETWORK \
        -v $PWD/config/msc-idm-2022:/wodin/config:ro \
-       mrcide/wodin:$APP_BRANCH
+       mrcide/wodin:$APP_BRANCH \
+       $REDIS --base-url=$WODIN_BASE/msc-idm-2022 /wodin/config
 
 docker run -d --name wodin-malawi-idm-2022 --network=$NETWORK \
        -v $PWD/config/malawi-idm-2022:/wodin/config:ro \
-       mrcide/wodin:$APP_BRANCH
+       mrcide/wodin:$APP_BRANCH \
+       $REDIS --base-url=$WODIN_BASE/malawi-idm-2022 /wodin/config
 
-docker run -d --name wodin-demo --network=$NETWORK \
-       -v $PWD/config/demo:/wodin/config:ro \
-       mrcide/wodin:$APP_BRANCH
+# One --site entry per site; matching above
+docker run  -d --network $NETWORK --name wodin-proxy \
+       -p 80:80 $SSL_PORTS \
+       -v $PWD/root:/wodin/root:ro \
+       mrcide/wodin-proxy:$PROXY_BRANCH \
+       $WODIN_HOST $SSL \
+       --site demo=wodin-demo:3000 \
+       --site msc-idm-2022=wodin-msc-idm-2022:3000 \
+       --site malawi-idm-2022=wodin-malawi-idm-2022:3000
 
-# Shared, but we need the app up and running already. We'll rewrite
-# this to be more general with a different proxy container soon...
-docker run -d --network $NETWORK --name proxy \
-       -p 80:80 -p 443:443 \
-       -v $PWD/root:/usr/share/nginx/html:ro \
-       mrcide/proxy-wodin-epimodels:$PROXY_BRANCH
-docker cp ssl/certificate.pem proxy:/run/proxy/
-docker cp ssl/key.pem proxy:/run/proxy/
+if [[ $WODIN_HOST == "localhost" ]]; then
+    echo "Not copying certificates, using http only"
+else
+    docker cp ssl/certificate.pem proxy:/run/proxy/
+    docker cp ssl/key.pem proxy:/run/proxy/
+fi

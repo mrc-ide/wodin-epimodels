@@ -19,3 +19,13 @@ Then, deploy:
 
 * On epimodels, run `./proxy/build` which updates the proxy image.
 * If you're deploying from a branch (likely while you test) then update `PROXY_BRANCH`
+
+## Configure the proxy by running
+
+```
+./configure-proxy epimodels
+```
+
+or on staging use `./configure-proxy wodin-dev`, or for local testing use `./configure-proxy localhost`
+
+This will copy any required ssl keys to `ssl/` and write out the required hostname into the file `hostname`.

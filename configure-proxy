@@ -1,6 +1,39 @@
 #!/usr/bin/env bash
-export VAULT_ADDR=https://vault.dide.ic.ac.uk:8200
-export VAULT_TOKEN=$(vault login -method=github -token-only)
+set -eu
+
+if [[ $# != 1 ]]; then
+    echo "Usage: ./configure-proxy <name>"
+    exit 1
+fi
+INSTANCE=$1
+
+case $INSTANCE in
+    epimodels)
+        VAULT_KEY=secret/wodin/ssl/epimodels
+        INSTANCE_HOST=epimodels.dide.ic.ac.uk
+        ;;
+    wodin-dev)
+        VAULT_KEY=secret/wodin/ssl/dev
+        INSTANCE_HOST=wodin-dev.dide.ic.ac.uk
+        ;;
+    localhost)
+        VAULT_KEY=
+        INSTANCE_HOST=localhost
+        ;;
+    *)
+        echo "Unknown instance name $INSTANCE"
+        exit 1
+        ;;
+esac
+
 mkdir -p ssl
-vault read -field=key secret/wodin/ssl/epimodels > ssl/key.pem
-vault read -field=cert secret/wodin/ssl/epimodels > ssl/certificate.pem
+if [ -z $VAULT_KEY ]; then
+    rm -r ssl
+else
+    export VAULT_ADDR=https://vault.dide.ic.ac.uk:8200
+    export VAULT_TOKEN=$(vault login -method=github -token-only)
+    vault read -field=key $VAULT_KEY > ssl/key.pem
+    vault read -field=cert $VAULT_KEY > ssl/certificate.pem
+fi
+
+echo $INSTANCE_HOST > hostname
