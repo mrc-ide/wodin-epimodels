@@ -61,8 +61,6 @@ docker run  -d --network $NETWORK --name wodin-proxy \
        mrcide/wodin-proxy:$PROXY_BRANCH \
        $WODIN_HOST $SSL $PROXY_SITE_ARG
 
-exit 0
-
 if [[ $WODIN_HOST == "localhost" ]]; then
     echo "Not copying certificates, using http only"
 else
