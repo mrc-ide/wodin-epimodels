@@ -7,11 +7,16 @@ API_BRANCH=main
 PROXY_BRANCH=mrc-3897
 REDIS="--redis-url=redis://wodin-redis:6379"
 
+if [[ ! -f hostname ]]; then
+    echo "Did not find file 'hostname' in current directory"
+    exit 1
+fi
+
 WODIN_HOST=$(cat hostname)
 if [[ $WODIN_HOST == "localhost" ]]; then
     SSL=
     SSL_PORTS=
-    WODIN_BASE="http://$WODIN_HOST"
+    WODIN_BASE="--base-url=http://$WODIN_HOST"
 else
     SSL="--ssl"
     SSL_PORTS="-p 443:443"
@@ -35,17 +40,17 @@ docker run -d --name odin.api --network=$NETWORK \
 docker run -d --name wodin-demo --network=$NETWORK \
        -v $PWD/config/demo:/wodin/config:ro \
        mrcide/wodin:$APP_BRANCH \
-       $REDIS --base-url=$WODIN_BASE/demo /wodin/config
+       $REDIS $WODIN_BASE/demo /wodin/config
 
 docker run -d --name wodin-msc-idm-2022 --network=$NETWORK \
        -v $PWD/config/msc-idm-2022:/wodin/config:ro \
        mrcide/wodin:$APP_BRANCH \
-       $REDIS --base-url=$WODIN_BASE/msc-idm-2022 /wodin/config
+       $REDIS $WODIN_BASE/msc-idm-2022 /wodin/config
 
 docker run -d --name wodin-malawi-idm-2022 --network=$NETWORK \
        -v $PWD/config/malawi-idm-2022:/wodin/config:ro \
        mrcide/wodin:$APP_BRANCH \
-       $REDIS --base-url=$WODIN_BASE/malawi-idm-2022 /wodin/config
+       $REDIS $WODIN_BASE/malawi-idm-2022 /wodin/config
 
 # One --site entry per site; matching above
 docker run  -d --network $NETWORK --name wodin-proxy \
