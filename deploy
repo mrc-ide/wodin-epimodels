@@ -31,7 +31,7 @@ else
     PROTOCOL="https"
 fi
 
-docker rm --force $(docker ps -q -f 'name=wodin-') 2> /dev/null || /bin/true
+docker rm --force $(docker ps -qa -f 'name=wodin-') 2> /dev/null || /bin/true
 docker network create $NETWORK 2> /dev/null || /bin/true
 docker volume create redis-docker
 
