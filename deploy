@@ -31,7 +31,10 @@ else
     PROTOCOL="https"
 fi
 
+echo "Bringing down any old containers"
 docker rm --force $(docker ps -qa -f 'name=wodin-') 2> /dev/null || /bin/true
+
+echo "Starting wodin"
 docker network create $NETWORK 2> /dev/null || /bin/true
 docker volume create redis-docker
 
