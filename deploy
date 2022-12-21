@@ -31,21 +31,21 @@ else
     PROTOCOL="https"
 fi
 
-echo "Bringing down any old containers"
-docker rm --force $(docker ps -qa -f 'name=wodin-') 2> /dev/null || /bin/true
-
-echo "Starting wodin"
-docker network create $NETWORK 2> /dev/null || /bin/true
-docker volume create redis-docker
-
+echo "*** Pulling images"
 docker pull mrcide/odin.api:$API_BRANCH
 docker pull mrcide/wodin:$APP_BRANCH
 docker pull mrcide/wodin-proxy:$PROXY_BRANCH
 
+echo "*** Bringing down any old containers"
+docker rm --force $(docker ps -qa -f 'name=wodin-') 2> /dev/null || /bin/true
+
+echo "*** Starting wodin"
+docker network create $NETWORK 2> /dev/null || /bin/true
+docker volume create redis-docker
+
 # Shared:
 docker run -d --name wodin-redis -v redis-data:/data --network=$NETWORK redis:6
-docker run -d --name wodin-api --network=$NETWORK \
-       mrcide/odin.api:$API_BRANCH
+docker run -d --name wodin-api --network=$NETWORK mrcide/odin.api:$API_BRANCH
 
 PROXY_SITE_ARG=""
 for SITE in "${SITES[@]}"; do
@@ -66,11 +66,11 @@ docker run  -d --network $NETWORK --name wodin-proxy \
        $WODIN_HOST $SSL $PROXY_SITE_ARG
 
 if [[ $WODIN_HOST == "localhost" ]]; then
-    echo "Not copying certificates, using http only"
+    echo "*** Not copying certificates, using http only"
 else
-    echo "Copying certificates"
+    echo "*** Copying certificates"
     docker cp ssl/certificate.pem wodin-proxy:/run/proxy/
     docker cp ssl/key.pem wodin-proxy:/run/proxy/
 fi
 
-echo "Done, wodin should now be available at $PROTOCOL://$WODIN_HOST"
+echo "*** Done, wodin should now be available at $PROTOCOL://$WODIN_HOST"
