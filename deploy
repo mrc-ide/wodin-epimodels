@@ -8,7 +8,7 @@ SITES=(demo msc-idm-2022 malawi-idm-2022)
 
 # Configure branches here
 NETWORK=epimodels
-APP_BRANCH=main
+APP_BRANCH=mrc-3904
 API_BRANCH=main
 PROXY_BRANCH=mrc-3897
 
