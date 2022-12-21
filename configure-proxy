@@ -26,14 +26,16 @@ case $INSTANCE in
         ;;
 esac
 
-mkdir -p ssl
 if [ -z $VAULT_KEY ]; then
-    rm -r ssl
+    rm -rf ssl
+    echo "Configured http proxy (no ssl) for $INSTANCE_HOST"
 else
     export VAULT_ADDR=https://vault.dide.ic.ac.uk:8200
     export VAULT_TOKEN=$(vault login -method=github -token-only)
+    mkdir -p ssl
     vault read -field=key $VAULT_KEY > ssl/key.pem
     vault read -field=cert $VAULT_KEY > ssl/certificate.pem
+    echo "Configured https proxy (with ssl) for $INSTANCE_HOST"
 fi
 
 echo $INSTANCE_HOST > hostname
