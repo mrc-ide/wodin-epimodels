@@ -35,14 +35,22 @@ Then deploy (or redeploy) with `./deploy`
 
 ## Adding a new configuration
 
-Add the configuration to `config/`; the name you give it is the name that the site will be available at. So for example:
+Edit [`deploy`](deploy) to:
+
+* list the new site within the array variable `SITES` (first line in the file basically)
+* add an entry in `SITES_URL` just below that; the key (in square brackets) must match the new entry in `SITES` exactly
+* if you need a specific reference add that as `SITES_REF[newsite]=mrc-1234`, otherwise this defaults to `main`
+
+For example adding
 
 ```
-git submodule add https://github.com/mrc-ide/wodin-demo-config config/demo2
+SITES=(... newsite)
+SITES_URL[newsite]=https://github.com/mrc-ide/wodin-newsite
+SITES_REF[newsite]=prototype
 ```
 
-Edit [`deploy`](deploy) to list the new site within the array variable `SITES` (first line in the file basically)
+would make a new site available at `http://localhost/newsite` using configuration from `https://github.com/mrc-ide/wodin-newsite` using branch `prototype`. Delete this last line once things have settled.
 
-Update the index page, `root/index.html` to list the new site, and probably the top of this README too!
+Update the index page, `root/index.html` to list the new site, and probably the top of this README too, as these both have manually updated lists.
 
 Then deploy with `./deploy`
