@@ -1,9 +1,0 @@
-[submodule "config/demo"]
-	path = config/demo
-	url = git@github.com:mrc-ide/wodin-demo-config
-[submodule "config/msc-idm-2022"]
-	path = config/msc-idm-2022
-	url = git@github.com:mrc-ide/wodin-msc-idm-2022
-[submodule "config/malawi-idm-2022"]
-	path = config/malawi-idm-2022
-	url = git@github.com:mrc-ide/wodin-malawi-idm-2022
