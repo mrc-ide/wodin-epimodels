@@ -6,9 +6,16 @@ set -eu
 # site (or removing one)
 SITES=(demo msc-idm-2022 malawi-idm-2022)
 
+declare -A SITES_URL
+declare -A SITES_REF
+
+SITES_URL[demo]="https://github.com/mrc-ide/wodin-demo-config"
+SITES_URL[msc-idm-2022]="https://github.com/mrc-ide/wodin-msc-idm-2022"
+SITES_URL[malawi-idm-2022]="https://github.com/mrc-ide/wodin-malawi-idm-2022"
+
 # Configure branches here
 NETWORK=epimodels
-APP_BRANCH=main
+APP_BRANCH=mrc-3907
 API_BRANCH=main
 PROXY_BRANCH=main
 
@@ -36,12 +43,22 @@ docker pull mrcide/odin.api:$API_BRANCH
 docker pull mrcide/wodin:$APP_BRANCH
 docker pull mrcide/wodin-proxy:$PROXY_BRANCH
 
+docker network create $NETWORK 2> /dev/null || /bin/true
+docker volume create redis-docker
+docker volume create wodin-config
+
+echo "*** Updating config"
+SITES_ARGS=()
+for SITE in "${SITES[@]}"; do
+    SITES_ARGS+=(/config/$SITE ${SITES_URL[$SITE]} "${SITES_REF[$SITE]:-main}")
+done
+docker run --rm -v wodin-config:/config --entrypoint update-sites \
+       mrcide/wodin:$APP_BRANCH ${SITES_ARGS[@]}
+
 echo "*** Bringing down any old containers"
 docker rm --force $(docker ps -qa -f 'name=wodin-') 2> /dev/null || /bin/true
 
 echo "*** Starting wodin"
-docker network create $NETWORK 2> /dev/null || /bin/true
-docker volume create redis-docker
 
 # Shared:
 docker run -d --name wodin-redis -v redis-data:/data --network=$NETWORK redis:6
@@ -51,11 +68,11 @@ PROXY_SITE_ARG=""
 for SITE in "${SITES[@]}"; do
     echo "Bringing up $SITE"
     docker run -d --name "wodin-$SITE" --network=$NETWORK \
-           -v $PWD/config/$SITE:/wodin/config:ro \
+           -v wodin-config:/wodin/config:ro \
            mrcide/wodin:$APP_BRANCH \
            --redis-url=redis://wodin-redis:6379 \
            --odin-api=http://wodin-api:8001 \
-           --base-url=$PROTOCOL://$WODIN_HOST/$SITE /wodin/config
+           --base-url=$PROTOCOL://$WODIN_HOST/$SITE /wodin/config/$SITE
     PROXY_SITE_ARG+="--site $SITE=wodin-$SITE:3000 "
 done
 
