@@ -11,7 +11,7 @@ We need to support multiple configurations easily; we'll come up with a better s
 ## Deploying
 
 ```
-git clone --recursive git@github.com:mrc-ide/epimodels
+git clone --recursive git@github.com:mrc-ide/wodin-epimodels.git
 ```
 
 If cloned already and things are not working, consider
