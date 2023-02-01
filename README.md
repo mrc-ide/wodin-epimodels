@@ -7,6 +7,7 @@ We need to support multiple configurations easily; we'll come up with a better s
 * `config/demo`: a configuration we'll maintain to show off various wodin features
 * `config/msc-idm-2022`: the 2022 MSc course
 * `config/malawi-idm-2022`: a short course run in Malawi
+* `config/gambia-idm-2023`: a short course run in The Gambia
 
 ## Deploying
 
