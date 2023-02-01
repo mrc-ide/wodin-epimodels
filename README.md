@@ -12,23 +12,14 @@ We need to support multiple configurations easily; we'll come up with a better s
 ## Deploying
 
 ```
-git clone --recursive git@github.com:mrc-ide/wodin-epimodels.git
+git clone git@github.com:mrc-ide/wodin-epimodels.git
 ```
 
-If cloned already and things are not working, consider
+Configure the proxy by running `./configure-proxy`:
 
-```
-git submodule init
-git submodule update
-```
-
-Configure the proxy by running:
-
-```
-./configure-proxy epimodels
-```
-
-or on staging use `./configure-proxy wodin-dev`, or for local testing use `./configure-proxy localhost`
+* `./configure-proxy epimodels` for use on epimodels.dide
+* `./configure-proxy wodin-dev` on wodin-dev.dide
+* `./configure-proxy localhost` locally for testing (no ssl)
 
 This will copy any required ssl keys to `ssl/` and write out the required hostname into the file `hostname`.
 

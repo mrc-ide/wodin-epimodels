@@ -16,7 +16,7 @@ SITES_URL[gambia-idm-2023]="https://github.com/mrc-ide/wodin-gambia-idm-2023"
 
 # Configure branches here
 NETWORK=epimodels
-APP_BRANCH=mrc-3907
+APP_BRANCH=main
 API_BRANCH=main
 PROXY_BRANCH=main
 
