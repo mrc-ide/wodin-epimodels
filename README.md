@@ -1,8 +1,8 @@
 # wodin-epimodels
 
-This is the repo for sketching out the initial deployment of the msc course to epimodels.dide.ic.ac.uk; once this is working we'll rewrite it to generally support a set of configurations.
+This is the repo for sketching out the initial deployment of the msc course to epimodels.dide.ic.ac.uk; once this is working we'll rewrite it to generally support a set of sites, each with their own configuration.
 
-We need to support multiple configurations easily; we'll come up with a better system later but for now we're using submodules. There are currently three:
+We need to support multiple configurations easily, we currently do this with a script in the `wodin` image that can update the configurations on a volume. There are currently four sites:
 
 * `config/demo`: a configuration we'll maintain to show off various wodin features
 * `config/msc-idm-2022`: the 2022 MSc course
@@ -25,7 +25,7 @@ This will copy any required ssl keys to `ssl/` and write out the required hostna
 
 Then deploy (or redeploy) with `./deploy`
 
-## Adding a new configuration
+## Adding a new site
 
 Edit [`deploy`](deploy) to:
 
