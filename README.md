@@ -2,20 +2,47 @@
 
 This is the repo for sketching out the initial deployment of the msc course to epimodels.dide.ic.ac.uk; once this is working we'll rewrite it to generally support a set of configurations.
 
-We need to support multiple configurations easily; we'll come up with a better system later but for now we're using submodules. There are currently two:
+We need to support multiple configurations easily; we'll come up with a better system later but for now we're using submodules. There are currently three:
 
 * `config/demo`: a configuration we'll maintain to show off various wodin features
 * `config/msc-idm-2022`: the 2022 MSc course
+* `config/malawi-idm-2022`: a short course run in Malawi
+
+## Deploying
+
+```
+git clone --recursive git@github.com:mrc-ide/wodin-epimodels.git
+```
+
+If cloned already and things are not working, consider
+
+```
+git submodule init
+git submodule update
+```
+
+Configure the proxy by running:
+
+```
+./configure-proxy epimodels
+```
+
+or on staging use `./configure-proxy wodin-dev`, or for local testing use `./configure-proxy localhost`
+
+This will copy any required ssl keys to `ssl/` and write out the required hostname into the file `hostname`.
+
+Then deploy (or redeploy) with `./deploy`
 
 ## Adding a new configuration
 
-Update the sources:
+Add the configuration to `config/`; the name you give it is the name that the site will be available at. So for example:
 
-* Add the configuration as a submodule under `config/`
-* Edit `./deploy` to bring up a container mounting this configuration, and to remove the container on startup
-* Edit `./proxy/nginx.conf` to add the new location (two entries - one is a redirect, the other does the proxying)
+```
+git submodule add https://github.com/mrc-ide/wodin-demo-config config/demo2
+```
 
-Then, deploy:
+Edit [`deploy`](deploy) to list the new site within the array variable `SITES` (first line in the file basically)
 
-* On epimodels, run `./proxy/build` which updates the proxy image.
-* If you're deploying from a branch (likely while you test) then update `PROXY_BRANCH`
+Update the index page, `root/index.html` to list the new site, and probably the top of this README too!
+
+Then deploy with `./deploy`
