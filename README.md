@@ -41,7 +41,7 @@ SITES_URL[newsite]=https://github.com/mrc-ide/wodin-newsite
 SITES_REF[newsite]=prototype
 ```
 
-would make a new site available at `http://localhost/newsite` using configuration from `https://github.com/mrc-ide/wodin-newsite` using branch `prototype`. Delete this last line once things have settled.
+would make a new site available at `http://localhost/newsite` using configuration from `https://github.com/mrc-ide/wodin-newsite` using branch `prototype`. Delete this last line to start using the `main` branch.
 
 Update the index page, `root/index.html` to list the new site, and probably the top of this README too, as these both have manually updated lists.
 
