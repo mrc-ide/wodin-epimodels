@@ -8,6 +8,7 @@ We need to support multiple configurations easily, we currently do this with a s
 * `config/msc-idm-2022`: the 2022 MSc course
 * `config/malawi-idm-2022`: a short course run in Malawi
 * `config/gambia-idm-2023`: a short course run in The Gambia
+* `config/acomvec-2023`: a short course run in Cameroon
 
 ## Deploying
 
