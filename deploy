@@ -4,7 +4,7 @@ set -eu
 # Can do this with SITES=(config/*) but it would pick up any file
 # there too. This is the main thing to configure when adding a new
 # site (or removing one)
-SITES=(demo msc-idm-2022 malawi-idm-2022 gambia-idm-2023)
+SITES=(demo msc-idm-2022 malawi-idm-2022 gambia-idm-2023 acomvec-2023)
 
 declare -A SITES_URL
 declare -A SITES_REF
