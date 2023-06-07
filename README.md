@@ -29,7 +29,7 @@ Then deploy (or redeploy) with `./deploy`
 
 ## Adding a new site
 
-Edit [`deploy`](deploy) to:
+Edit [`sites`](sites) to:
 
 * list the new site within the array variable `SITES` (first line in the file basically)
 * add an entry in `SITES_URL` just below that; the key (in square brackets) must match the new entry in `SITES` exactly
