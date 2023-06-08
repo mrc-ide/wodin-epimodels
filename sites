@@ -1,0 +1,14 @@
+# Can do this with SITES=(config/*) but it would pick up any file
+# there too. This is the main thing to configure when adding a new
+# site (or removing one)
+SITES=(demo msc-idm-2022 malawi-idm-2022 gambia-idm-2023 acomvec-2023 infectiousdiseasemodels-2023)
+
+declare -A SITES_URL
+declare -A SITES_REF
+
+SITES_URL[demo]="https://github.com/mrc-ide/wodin-demo-config"
+SITES_URL[msc-idm-2022]="https://github.com/mrc-ide/wodin-msc-idm-2022"
+SITES_URL[malawi-idm-2022]="https://github.com/mrc-ide/wodin-malawi-idm-2022"
+SITES_URL[gambia-idm-2023]="https://github.com/mrc-ide/wodin-gambia-idm-2023"
+SITES_URL[acomvec-2023]="https://github.com/mrc-ide/wodin-acomvec-2023"
+SITES_URL[infectiousdiseasemodels-2023]="https://github.com/mrc-ide/wodin-shortcourse-2023"
