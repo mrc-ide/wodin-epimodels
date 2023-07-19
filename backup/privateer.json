@@ -1,0 +1,33 @@
+{
+  "targets": [
+    {
+      "name": "redis-docker",
+      "type": "volume",
+      "schedules": [
+        {
+          "name": "daily",
+          "retention_days": 7
+        }
+      ]
+    },
+    {
+      "name": "wodin-config",
+      "type": "volume",
+      "schedules": [
+        {
+          "name": "daily",
+          "retention_days": 7
+        }
+      ]
+    }
+  ],
+  "hosts": [
+    {
+      "name": "annex",
+      "user": "montagu",
+      "hostname": "annex.montagu.dide.ic.ac.uk",
+      "path": "wodin-backup",
+      "type": "remote"
+    }
+  ]
+}
