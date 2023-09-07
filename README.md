@@ -12,7 +12,7 @@ We need to support multiple configurations easily, we currently do this with a s
 * `config/acomvec-2023`: a short course run in Cameroon
 * `config/infectiousdiseasemodels-2023`: The DIDE short course (2023)
 
-## Deploying
+## Deploying for the first time
 
 ```
 git clone git@github.com:mrc-ide/wodin-epimodels.git
@@ -49,3 +49,47 @@ would make a new site available at `http://localhost/newsite` using configuratio
 Update the index page, `root/index.html` to list the new site, and probably the top of this README too, as these both have manually updated lists.
 
 Then deploy with `./deploy`
+
+## Updating the deployment
+
+### To update everything (containers and every site)
+
+```
+ssh epimodels # or wodin-dev
+cd wodin-epimodels
+./deploy
+```
+
+This updates the sites as well the containers
+
+### To update the source of one site
+
+```
+ssh epimodels # or wodin-dev
+cd wodin-epimodels
+./update_source infectiousdiseasemodels-2023
+```
+
+No changes to the config will be updated.
+
+### To try a different branch of wodin or odin.api
+
+Edit (on the server) `./wodin-epimodels/deploy` and redeploy by running 
+
+### To try a different branch of the config
+
+Edit (on the server) `./wodin-epimodels/sites` and add
+
+```
+SITES_REF[infectiousdiseasemodels-2023]="mrc-1234"
+```
+
+(just put it after all the `SITE_URL` bits that are already there)
+
+Then deploy with `./deploy`
+
+Clean up with
+
+```
+git checkout -- .
+```
