@@ -10,7 +10,15 @@
     "clients": [
         {
             "name": "epimodels",
-            "backup": ["redis-data"]
+            "backup": ["redis-data"],
+            "schedule": {
+                "port": 9090,
+                "jobs": {
+                    "server": "annex2",
+                    "volume": "redis-data",
+                    "schedule": "@hourly"
+                }
+            }
         }
     ],
     "volumes": [
