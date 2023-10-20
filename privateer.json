@@ -1,0 +1,24 @@
+{
+    "servers": [
+        {
+            "name": "annex2",
+            "hostname": "annex2.montagu.dide.ic.ac.uk",
+            "port": 10023
+        }
+    ],
+    "clients": [
+        {
+            "name": "epimodels",
+            "backup": ["redis-data"]
+        }
+    ],
+    "volumes": [
+        {
+            "name": "redis-data"
+        }
+    ],
+    "vault": {
+        "url": "https://vault.dide.ic.ac.uk:8200",
+        "prefix": "/secret/wodin/privateer/epimodels"
+    }
+}
