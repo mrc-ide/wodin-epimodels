@@ -6,7 +6,7 @@ set -eu
 # Configure branches here
 NETWORK=epimodels
 APP_BRANCH=main
-APP_PREVIEW=mrc-5455-v2
+APP_PREVIEW=4cbf494
 API_BRANCH=main
 PROXY_BRANCH=main
 
