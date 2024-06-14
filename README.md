@@ -2,17 +2,18 @@
 
 This is the repo for sketching out the initial deployment of the msc course to epimodels.dide.ic.ac.uk; once this is working we'll rewrite it to generally support a set of sites, each with their own configuration.
 
-We need to support multiple configurations easily, we currently do this with a script in the `wodin` image that can update the configurations on a volume. There are currently six sites:
+We need to support multiple configurations easily, we currently do this with a script in the `wodin` image that can update the configurations on a volume. The current sites are:
 
-* `config/demo`: a configuration we'll maintain to show off various wodin features
-* `config/msc-idm-2022`: the 2022 MSc course
-* `config/msc-idm-2023`: the 2023 MSc course
-* `config/malawi-idm-2022`: a short course run in Malawi
-* `config/gambia-idm-2023`: a short course run in The Gambia (2023)
-* `config/gambia-idm-2024`: a short course run in The Gambia (2024)
-* `config/acomvec-2023`: a short course run in Cameroon
-* `config/infectiousdiseasemodels-2023`: The DIDE short course (2023)
-* `config/infectiousdiseasemodels-2024`: The DIDE short course (2024)
+* `demo`: a configuration we'll maintain to show off various wodin features
+* `preview`: a configuration we'll maintain to show off various wodin features in development
+* `msc-idm-2022`: the 2022 MSc course
+* `msc-idm-2023`: the 2023 MSc course
+* `malawi-idm-2022`: a short course run in Malawi
+* `gambia-idm-2023`: a short course run in The Gambia (2023)
+* `gambia-idm-2024`: a short course run in The Gambia (2024)
+* `acomvec-2023`: a short course run in Cameroon
+* `infectiousdiseasemodels-2023`: The DIDE short course (2023)
+* `infectiousdiseasemodels-2024`: The DIDE short course (2024)
 
 ## Deploying for the first time
 
