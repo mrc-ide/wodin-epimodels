@@ -35,7 +35,7 @@ docker pull mrcide/wodin:$APP_BRANCH
 docker pull mrcide/wodin:$APP_PREVIEW
 docker pull mrcide/wodin-proxy:$PROXY_BRANCH
 
-docker network create $NETWORK 2> /dev/null || /bin/true
+docker network create $NETWORK --subnet 192.168.160.0/20 2> /dev/null || /bin/true
 docker volume create redis-docker
 docker volume create wodin-config
 
