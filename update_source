@@ -10,4 +10,4 @@ echo "Upating site $SITE"
 SITE_ARGS="/config/$SITE ${SITES_URL[$SITE]} ${SITES_REF[$SITE]:-main}"
 
 docker run --rm -v wodin-config:/config --entrypoint update-sites \
-       mrcide/wodin:main ${SITE_ARGS}
+       ghcr.io/mrc-ide/wodin:main ${SITE_ARGS}

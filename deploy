@@ -31,9 +31,9 @@ fi
 
 echo "*** Pulling images"
 docker pull mrcide/odin.api:$API_BRANCH
-docker pull mrcide/wodin:$APP_BRANCH
-docker pull mrcide/wodin:$APP_PREVIEW
-docker pull mrcide/wodin-proxy:$PROXY_BRANCH
+docker pull ghcr.io/mrc-ide/wodin:$APP_BRANCH
+docker pull ghcr.io/mrc-ide/wodin:$APP_PREVIEW
+docker pull ghcr.io/mrc-ide/wodin-proxy:$PROXY_BRANCH
 
 docker network create $NETWORK --subnet 192.168.160.0/20 2> /dev/null || /bin/true
 docker volume create redis-docker
@@ -45,9 +45,9 @@ for SITE in "${SITES[@]}"; do
     SITES_ARGS+=(/config/$SITE ${SITES_URL[$SITE]} "${SITES_REF[$SITE]:-main}")
 done
 docker run --rm -v wodin-config:/config --entrypoint update-sites \
-       mrcide/wodin:$APP_BRANCH ${SITES_ARGS[@]}
+       ghcr.io/mrc-ide/wodin:$APP_BRANCH ${SITES_ARGS[@]}
 docker run --rm -v wodin-config:/config --entrypoint update-sites \
-       mrcide/wodin:$APP_PREVIEW /config/preview https://github.com/mrc-ide/wodin-demo-config "main"
+       ghcr.io/mrc-ide/wodin:$APP_PREVIEW /config/preview https://github.com/mrc-ide/wodin-demo-config "main"
 
 echo "*** Bringing down any old containers"
 docker rm --force $(docker ps -qa -f 'name=wodin-') 2> /dev/null || /bin/true
@@ -63,7 +63,7 @@ for SITE in "${SITES[@]}"; do
     echo "Bringing up $SITE"
     docker run -d --name "wodin-$SITE" --network=$NETWORK \
            -v wodin-config:/wodin/config:ro \
-           mrcide/wodin:$APP_BRANCH \
+           ghcr.io/mrc-ide/wodin:$APP_BRANCH \
            --redis-url=redis://wodin-redis:6379 \
            --odin-api=http://wodin-api:8001 \
            --base-url=$PROTOCOL://$WODIN_HOST/$SITE /wodin/config/$SITE
@@ -73,7 +73,7 @@ done
 echo "Bringing up preview"
 docker run -d --name "wodin-preview" --network=$NETWORK \
        -v wodin-config:/wodin/config:ro \
-       mrcide/wodin:$APP_PREVIEW \
+       ghcr.io/mrc-ide/wodin:$APP_PREVIEW \
        --redis-url=redis://wodin-redis:6379 \
        --odin-api=http://wodin-api:8001 \
        --base-url=$PROTOCOL://$WODIN_HOST/preview /wodin/config/preview
@@ -82,7 +82,7 @@ PROXY_SITE_ARG+="--site preview=wodin-preview:3000 "
 docker run  -d --network $NETWORK --name wodin-proxy \
        -p 80:80 $SSL_PORTS \
        -v $PWD/root:/wodin/root:ro \
-       mrcide/wodin-proxy:$PROXY_BRANCH \
+       ghcr.io/mrc-ide/wodin-proxy:$PROXY_BRANCH \
        $WODIN_HOST $SSL $PROXY_SITE_ARG
 
 if [[ $WODIN_HOST == "localhost" ]]; then
