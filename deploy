@@ -33,7 +33,7 @@ echo "*** Pulling images"
 docker pull mrcide/odin.api:$API_BRANCH
 docker pull ghcr.io/mrc-ide/wodin:$APP_BRANCH
 docker pull ghcr.io/mrc-ide/wodin:$APP_PREVIEW
-docker pull ghcr.io/mrc-ide/wodin-proxy:$PROXY_BRANCH
+docker pull mrcide/wodin-proxy:$PROXY_BRANCH
 
 docker network create $NETWORK --subnet 192.168.160.0/20 2> /dev/null || /bin/true
 docker volume create redis-docker
@@ -82,7 +82,7 @@ PROXY_SITE_ARG+="--site preview=wodin-preview:3000 "
 docker run  -d --network $NETWORK --name wodin-proxy \
        -p 80:80 $SSL_PORTS \
        -v $PWD/root:/wodin/root:ro \
-       ghcr.io/mrc-ide/wodin-proxy:$PROXY_BRANCH \
+       mrcide/wodin-proxy:$PROXY_BRANCH \
        $WODIN_HOST $SSL $PROXY_SITE_ARG
 
 if [[ $WODIN_HOST == "localhost" ]]; then
