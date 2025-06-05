@@ -28,9 +28,11 @@ Configure the proxy by running `./configure-proxy`:
 * `./configure-proxy wodin-dev` on wodin-dev.dide
 * `./configure-proxy localhost` locally for testing (no ssl)
 
-This will copy any required ssl keys to `ssl/` and write out the required hostname into the file `hostname`.
+This will configure the Let's Encrypt client, obtain an initial certificate and setup a cron job for automatic renewal.
 
-Then deploy (or redeploy) with `./deploy`
+Then deploy (or redeploy) with `./deploy`.
+
+When running locally, the `configure-proxy` script can be run with a `LEGO_URL=https://acme-staging-v02.api.letsencrypt.org/directory` environment variable to avoid producing real-word certificates.
 
 ## Adding a new site
 
