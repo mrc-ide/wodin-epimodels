@@ -5,19 +5,17 @@ if [[ $# != 1 ]]; then
     echo "Usage: ./configure-proxy <name>"
     exit 1
 fi
+
 INSTANCE=$1
 
 case $INSTANCE in
     epimodels)
-        VAULT_KEY=secret/wodin/ssl/epimodels
         INSTANCE_HOST=epimodels.dide.ic.ac.uk
         ;;
     wodin-dev)
-        VAULT_KEY=secret/wodin/ssl/dev
         INSTANCE_HOST=wodin-dev.dide.ic.ac.uk
         ;;
     localhost)
-        VAULT_KEY=
         INSTANCE_HOST=localhost
         ;;
     *)
@@ -26,16 +24,68 @@ case $INSTANCE in
         ;;
 esac
 
-if [ -z $VAULT_KEY ]; then
-    rm -rf ssl
+echo $INSTANCE_HOST > hostname
+
+if [[ $INSTANCE == "localhost" ]]; then
+    rm -rf .lego
     echo "Configured http proxy (no ssl) for $INSTANCE_HOST"
 else
     export VAULT_ADDR=https://vault.dide.ic.ac.uk:8200
-    export VAULT_TOKEN=$(vault login -method=github -token-only)
-    mkdir -p ssl
-    vault read -field=key $VAULT_KEY > ssl/key.pem
-    vault read -field=cert $VAULT_KEY > ssl/certificate.pem
-    echo "Configured https proxy (with ssl) for $INSTANCE_HOST"
-fi
+    VAULT_TOKEN=$(vault login -method=github -token-only)
+    export VAULT_TOKEN
 
-echo $INSTANCE_HOST > hostname
+    username=$(vault read -field=username "secret/certbot-hdb/credentials")
+    password=$(vault read -field=password "secret/certbot-hdb/credentials")
+    cat > hdb-credentials <<EOF
+HDB_ACME_USERNAME=$username
+HDB_ACME_PASSWORD=$password
+EOF
+
+    # By default Docker containers run as root, which would make the files it
+    # produces in .lego inaccesible for the unpriviledged user. We use start
+    # the container with the current numeric UID:GID pair, ensuring the
+    # permissions on disk are as we expect them to.
+    USERGROUP="$(id -u):$(id -g)"
+
+    # TODO: remove pr-2 when lego-hdb is merged to main
+    LEGO_HDB_IMAGE=ghcr.io/reside-ic/lego-hdb:pr-2
+
+    : "${LEGO_SERVER:=https://acme-v02.api.letsencrypt.org/directory}"
+
+    mkdir -p .lego
+    docker run \
+        --pull=always \
+        --env-file hdb-credentials \
+        --volume "$PWD/.lego:/.lego" \
+        --user "$USERGROUP" \
+        "$LEGO_HDB_IMAGE" \
+        --server "$LEGO_SERVER" \
+        --domains "$INSTANCE_HOST" \
+        --email reside@imperial.ac.uk \
+        --dns exec \
+        --accept-tos run
+
+    # The environment variables below all get evaluated within the context of
+    # the current script, not within the context of the cron job. That is
+    # intentional, as it ensures the cronjob will work even when running in a
+    # different working directory, etc..
+    sudo install -m755 /dev/stdin /etc/cron.daily/epimodels-renew-certificate <<EOF
+#!/usr/bin/env bash
+set -eu
+docker run \\
+    --env-file $PWD/hdb-credentials \\
+    --volume $PWD/.lego:/.lego \\
+    --user "$USERGROUP" \\
+    "$LEGO_HDB_IMAGE" \\
+    --server "$LEGO_SERVER" \\
+    --domains "$INSTANCE_HOST" \\
+    --email reside@imperial.ac.uk \\
+    --dns exec \\
+    --accept-tos renew
+
+docker cp $PWD/.lego/certificates/$INSTANCE_HOST.crt wodin-proxy:/run/proxy/certificate.pem
+docker cp $PWD/.lego/certificates/$INSTANCE_HOST.key wodin-proxy:/run/proxy/key.pem
+docker exec wodin-proxy nginx -s reload
+EOF
+
+fi

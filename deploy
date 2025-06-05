@@ -89,8 +89,8 @@ if [[ $WODIN_HOST == "localhost" ]]; then
     echo "*** Not copying certificates, using http only"
 else
     echo "*** Copying certificates"
-    docker cp ssl/certificate.pem wodin-proxy:/run/proxy/
-    docker cp ssl/key.pem wodin-proxy:/run/proxy/
+    docker cp $PWD/.lego/certificates/$WODIN_HOST.crt wodin-proxy:/run/proxy/certificate.pem
+    docker cp $PWD/.lego/certificates/$WODIN_HOST.key wodin-proxy:/run/proxy/key.pem
 fi
 
 echo "*** Done, wodin should now be available at $PROTOCOL://$WODIN_HOST"
