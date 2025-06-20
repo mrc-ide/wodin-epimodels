@@ -5,19 +5,17 @@ if [[ $# != 1 ]]; then
     echo "Usage: ./configure-proxy <name>"
     exit 1
 fi
+
 INSTANCE=$1
 
 case $INSTANCE in
     epimodels)
-        VAULT_KEY=secret/wodin/ssl/epimodels
         INSTANCE_HOST=epimodels.dide.ic.ac.uk
         ;;
     wodin-dev)
-        VAULT_KEY=secret/wodin/ssl/dev
         INSTANCE_HOST=wodin-dev.dide.ic.ac.uk
         ;;
     localhost)
-        VAULT_KEY=
         INSTANCE_HOST=localhost
         ;;
     *)
@@ -26,16 +24,19 @@ case $INSTANCE in
         ;;
 esac
 
-if [ -z $VAULT_KEY ]; then
-    rm -rf ssl
+echo $INSTANCE_HOST > hostname
+
+if [[ $INSTANCE == "localhost" ]]; then
     echo "Configured http proxy (no ssl) for $INSTANCE_HOST"
 else
     export VAULT_ADDR=https://vault.dide.ic.ac.uk:8200
-    export VAULT_TOKEN=$(vault login -method=github -token-only)
-    mkdir -p ssl
-    vault read -field=key $VAULT_KEY > ssl/key.pem
-    vault read -field=cert $VAULT_KEY > ssl/certificate.pem
-    echo "Configured https proxy (with ssl) for $INSTANCE_HOST"
-fi
+    VAULT_TOKEN=$(vault login -method=github -token-only)
+    export VAULT_TOKEN
 
-echo $INSTANCE_HOST > hostname
+    username=$(vault read -field=username "secret/certbot-hdb/credentials")
+    password=$(vault read -field=password "secret/certbot-hdb/credentials")
+    cat > hdb-credentials <<EOF
+HDB_ACME_USERNAME=$username
+HDB_ACME_PASSWORD=$password
+EOF
+fi

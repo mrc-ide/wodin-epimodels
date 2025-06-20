@@ -29,9 +29,14 @@ Configure the proxy by running `./configure-proxy`:
 * `./configure-proxy wodin-dev` on wodin-dev.dide
 * `./configure-proxy localhost` locally for testing (no ssl)
 
-This will copy any required ssl keys to `ssl/` and write out the required hostname into the file `hostname`.
+If needed, this will obtain the right credentials from Vault.
 
-Then deploy (or redeploy) with `./deploy`
+Then deploy (or redeploy) with `./deploy`.
+
+`./deploy` will automatically request a certificate from Let's Encrypt, as well
+as setup automatic renewals. When running locally, the `deploy` script can be
+run with a `ACME_BUDDY_STAGING=1` environment variable to avoid producing
+real-word certificates.
 
 ## Adding a new site
 

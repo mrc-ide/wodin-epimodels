@@ -22,31 +22,28 @@ WODIN_HOST=$(cat hostname)
 if [[ $WODIN_HOST == "localhost" ]]; then
     SSL=
     SSL_PORTS=
+    SSL_VOLUME=
     PROTOCOL="http"
 else
     SSL="--ssl"
-    SSL_PORTS="-p 443:443"
+    SSL_PORTS="--publish=443:443"
+    SSL_VOLUME="--volume=wodin-tls:/run/proxy"
     PROTOCOL="https"
 fi
-
-echo "*** Pulling images"
-docker pull mrcide/odin.api:$API_BRANCH
-docker pull ghcr.io/mrc-ide/wodin:$APP_BRANCH
-docker pull ghcr.io/mrc-ide/wodin:$APP_PREVIEW
-docker pull mrcide/wodin-proxy:$PROXY_BRANCH
 
 docker network create $NETWORK --subnet 192.168.160.0/20 2> /dev/null || /bin/true
 docker volume create redis-docker
 docker volume create wodin-config
+docker volume create wodin-tls
 
 echo "*** Updating config"
 SITES_ARGS=()
 for SITE in "${SITES[@]}"; do
     SITES_ARGS+=(/config/$SITE ${SITES_URL[$SITE]} "${SITES_REF[$SITE]:-main}")
 done
-docker run --rm -v wodin-config:/config --entrypoint update-sites \
+docker run --rm --pull always -v wodin-config:/config --entrypoint update-sites \
        ghcr.io/mrc-ide/wodin:$APP_BRANCH ${SITES_ARGS[@]}
-docker run --rm -v wodin-config:/config --entrypoint update-sites \
+docker run --rm --pull always -v wodin-config:/config --entrypoint update-sites \
        ghcr.io/mrc-ide/wodin:$APP_PREVIEW /config/preview https://github.com/mrc-ide/wodin-demo-config "main"
 
 echo "*** Bringing down any old containers"
@@ -55,8 +52,8 @@ docker rm --force $(docker ps -qa -f 'name=wodin-') 2> /dev/null || /bin/true
 echo "*** Starting wodin"
 
 # Shared:
-docker run -d --name wodin-redis -v redis-data:/data --network=$NETWORK redis:6
-docker run -d --name wodin-api --network=$NETWORK mrcide/odin.api:$API_BRANCH
+docker run -d --pull always --name wodin-redis -v redis-data:/data --network=$NETWORK redis:6
+docker run -d --pull always --name wodin-api --network=$NETWORK mrcide/odin.api:$API_BRANCH
 
 PROXY_SITE_ARG=""
 for SITE in "${SITES[@]}"; do
@@ -79,18 +76,41 @@ docker run -d --name "wodin-preview" --network=$NETWORK \
        --base-url=$PROTOCOL://$WODIN_HOST/preview /wodin/config/preview
 PROXY_SITE_ARG+="--site preview=wodin-preview:3000 "
 
-docker run  -d --network $NETWORK --name wodin-proxy \
+# The wodin-proxy image is setup to wait until a certificate is available
+# before starting up, which means we can actually start the proxy and
+# acme-buddy at the same time.
+echo "*** Starting wodin-proxy"
+docker run -d \
+       --pull always \
+       --network $NETWORK \
+       --name wodin-proxy \
        -p 80:80 $SSL_PORTS \
-       -v $PWD/root:/wodin/root:ro \
+       -v $PWD/root:/wodin/root:ro $SSL_VOLUME \
        mrcide/wodin-proxy:$PROXY_BRANCH \
        $WODIN_HOST $SSL $PROXY_SITE_ARG
 
 if [[ $WODIN_HOST == "localhost" ]]; then
-    echo "*** Not copying certificates, using http only"
+    echo "*** Not requesting certificates, using http only"
 else
-    echo "*** Copying certificates"
-    docker cp ssl/certificate.pem wodin-proxy:/run/proxy/
-    docker cp ssl/key.pem wodin-proxy:/run/proxy/
+    ACME_BUDDY_IMAGE=ghcr.io/reside-ic/acme-buddy:main
+
+    echo "*** Starting acme-buddy container"
+    docker run -d \
+        --pull always \
+        --name wodin-acme-buddy \
+        --publish 2112:2112 \
+        --volume wodin-tls:/tls \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        --env ACME_BUDDY_STAGING \
+        --env-file hdb-credentials \
+        "$ACME_BUDDY_IMAGE" \
+        --domain "$WODIN_HOST" \
+        --email reside@imperial.ac.uk \
+        --dns-provider hdb \
+        --certificate-path /tls/certificate.pem \
+        --key-path /tls/key.pem \
+        --account-path /tls/account.json \
+        --reload-container wodin-proxy
 fi
 
 echo "*** Done, wodin should now be available at $PROTOCOL://$WODIN_HOST"
