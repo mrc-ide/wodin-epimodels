@@ -1,7 +1,7 @@
 # Can do this with SITES=(config/*) but it would pick up any file
 # there too. This is the main thing to configure when adding a new
 # site (or removing one)
-SITES=(demo msc-idm-2022 msc-idm-2023 msc-idm-2024 malawi-idm-2022 gambia-idm-2023 gambia-idm-2024 acomvec-2023 buc-2023 infectiousdiseasemodels-2023 infectiousdiseasemodels-2024 infectiousdiseasemodels-2025 royal-society udsm-imperial-2025)
+SITES=(demo msc-idm-2022 msc-idm-2023 msc-idm-2024 msc-idm-2025 malawi-idm-2022 gambia-idm-2023 gambia-idm-2024 acomvec-2023 buc-2023 infectiousdiseasemodels-2023 infectiousdiseasemodels-2024 infectiousdiseasemodels-2025 royal-society udsm-imperial-2025)
 
 declare -A SITES_URL
 declare -A SITES_REF
@@ -10,6 +10,7 @@ SITES_URL[demo]="https://github.com/mrc-ide/wodin-demo-config"
 SITES_URL[msc-idm-2022]="https://github.com/mrc-ide/wodin-msc-idm-2022"
 SITES_URL[msc-idm-2023]="https://github.com/mrc-ide/wodin-msc-idm-2023"
 SITES_URL[msc-idm-2024]="https://github.com/mrc-ide/wodin-msc-idm-2024"
+SITES_URL[msc-idm-2025]="https://github.com/mrc-ide/wodin-msc-idm-2025"
 SITES_URL[malawi-idm-2022]="https://github.com/mrc-ide/wodin-malawi-idm-2022"
 SITES_URL[gambia-idm-2023]="https://github.com/mrc-ide/wodin-gambia-idm-2023"
 SITES_URL[gambia-idm-2024]="https://github.com/mrc-ide/wodin-gambia-idm-2024"

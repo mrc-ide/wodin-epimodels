@@ -9,6 +9,7 @@ We need to support multiple configurations easily, we currently do this with a s
 * `msc-idm-2022`: the 2022 MSc course
 * `msc-idm-2023`: the 2023 MSc course
 * `msc-idm-2024`: the 2024 MSc course
+* `msc-idm-2025`: the 2025 MSc course
 * `malawi-idm-2022`: a short course run in Malawi
 * `gambia-idm-2023`: a short course run in The Gambia (2023)
 * `gambia-idm-2024`: a short course run in The Gambia (2024)
