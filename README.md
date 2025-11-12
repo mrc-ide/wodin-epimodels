@@ -18,6 +18,7 @@ We need to support multiple configurations easily, we currently do this with a s
 * `infectiousdiseasemodels-2024`: The DIDE short course (2024)
 * `infectiousdiseasemodels-2025`: The DIDE short course (2025)
 * `infectiousdiseasemodels-quito-2025`: The DIDE short course in Quito (2025)
+* `infectiousdiseasemodels-vietnam-2025`: a short course run in OUCRU (2025)
 
 ## Deploying for the first time
 
