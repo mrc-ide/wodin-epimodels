@@ -4,7 +4,9 @@
             "name": "annex2",
             "hostname": "annex2.montagu.dide.ic.ac.uk",
             "port": 10023,
-            "container": "privateer_server_wodin_epimodels"
+            "key_volume": "privateer_wodin_epimodels_keys",
+            "data_volume": "privateer_wodin_epimodels_data",
+            "container": "privateer_wodin_epimodels_server"
         }
     ],
     "clients": [
