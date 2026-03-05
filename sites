@@ -1,7 +1,7 @@
 # Can do this with SITES=(config/*) but it would pick up any file
 # there too. This is the main thing to configure when adding a new
 # site (or removing one)
-SITES=(demo msc-idm-2022 msc-idm-2023 msc-idm-2024 msc-idm-2025 malawi-idm-2022 gambia-idm-2023 gambia-idm-2024 acomvec-2023 buc-2023 infectiousdiseasemodels-2023 infectiousdiseasemodels-2024 infectiousdiseasemodels-2025 royal-society udsm-imperial-2025 infectiousdiseasemodels-quito-2025 infectiousdiseasemodels-vietnam-2025 mpox-workshop)
+SITES=(demo msc-idm-2022 msc-idm-2023 msc-idm-2024 msc-idm-2025 malawi-idm-2022 gambia-idm-2023 gambia-idm-2024 acomvec-2023 buc-2023 infectiousdiseasemodels-2023 infectiousdiseasemodels-2024 infectiousdiseasemodels-2025 royal-society udsm-imperial-2025 infectiousdiseasemodels-quito-2025 infectiousdiseasemodels-vietnam-2025 kinshasa-workshop-2026)
 
 declare -A SITES_URL
 declare -A SITES_REF
@@ -23,4 +23,4 @@ SITES_URL[royal-society]="https://github.com/mrc-ide/wodin-royal-society"
 SITES_URL[udsm-imperial-2025]="https://github.com/mrc-ide/udsm-imperial-2025"
 SITES_URL[infectiousdiseasemodels-quito-2025]="https://github.com/mrc-ide/wodin-quito-workshop"
 SITES_URL[infectiousdiseasemodels-vietnam-2025]="https://github.com/mrc-ide/infectiousdiseasemodels-vietnam-2025"
-SITES_URL[mpox-workshop]="https://github.com/mrc-ide/mpox-workshop-repo"
+SITES_URL[kinshasa-workshop-2026]="https://github.com/mrc-ide/mpox-workshop-repo"
