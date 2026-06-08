@@ -20,6 +20,7 @@ We need to support multiple configurations easily, we currently do this with a s
 * `infectiousdiseasemodels-quito-2025`: The DIDE short course in Quito (2025)
 * `infectiousdiseasemodels-vietnam-2025`: a short course run in OUCRU (2025)
 * `kinshasa-workshop-2026`: a workshop run in DRC (2026)
+* `infectiousdiseasemodels-asiadenguesummit-2026`: a workshop at 9th Asia Dengue Summit, Singapore, 15-17th June 2026
 
 ## Deploying for the first time
 
