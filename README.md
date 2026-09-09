@@ -23,6 +23,7 @@ We need to support multiple configurations easily, we currently do this with a s
 * `infectiousdiseasemodels-asiadenguesummit-2026`: a workshop at 9th Asia Dengue Summit, Singapore, 15-17th June 2026
 * `msc-idm-2026`: the 2026 MSc course
 * `anostep-kemri-2026`: A training worship run by Nilani (2026)
+* `wodin-shortcourse-2026`: The DIDE short course (2026)
 
 ## Deploying for the first time
 
