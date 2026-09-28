@@ -24,6 +24,7 @@ We need to support multiple configurations easily, we currently do this with a s
 * `msc-idm-2026`: the 2026 MSc course
 * `anostep-kemri-2026`: A training worship run by Nilani (2026)
 * `wodin-shortcourse-2026`: The DIDE short course (2026)
+* `trachoma-2026`: A 2026 workshop on transmission dynamics of trachoma. 
 
 ## Deploying for the first time
 
